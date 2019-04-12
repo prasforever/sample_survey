@@ -1,4 +1,8 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+
+import { loadAction } from "../actions/actions";
+
 import "./style.css";
 
 class App extends Component {
@@ -7,4 +11,15 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = ({ loadAction }) => ({
+  loadAction
+});
+
+const mapDispatchToProps = dispatch => ({
+  loadAction: () => dispatch(loadAction())
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);
