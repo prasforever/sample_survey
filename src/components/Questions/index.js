@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-// import { connect } from "react-redux";
+import { connect } from "react-redux";
 import { withStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 
@@ -16,28 +16,23 @@ const styles = theme => ({
 });
 
 class Questions extends Component {
-  state = {
-    expanded: null
-  };
-
-  handleChange = panel => (event, expanded) => {
-    this.setState({
-      expanded: expanded ? panel : false
+  renderQuestions() {
+    const { classes } = this.props;
+    return this.props.questions.map((question, i) => {
+      return (
+        <Paper key={i} className={classes.content} elevation={0}>
+          {question.title}
+        </Paper>
+      );
     });
-  };
+  }
 
   render() {
     const { classes } = this.props;
 
     return (
       <div className={classes.root}>
-        <Paper className={classes.content} elevation={0}>
-          <p> Question 1</p>
-        </Paper>
-
-        <Paper className={classes.content} elevation={0}>
-          <p> Question 2</p>
-        </Paper>
+        {this.renderQuestions()}
         <Paper className={classes.content} elevation={0}>
           <AddQuestion />
         </Paper>
@@ -45,4 +40,9 @@ class Questions extends Component {
     );
   }
 }
-export default withStyles(styles)(Questions);
+
+const mapStateToProps = state => {
+  return { questions: state.questions };
+};
+
+export default connect(mapStateToProps)(withStyles(styles)(Questions));

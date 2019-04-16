@@ -6,7 +6,6 @@ import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
 import { addQuestion } from "../../actions/";
@@ -18,8 +17,16 @@ const styles = theme => ({
 });
 
 class AddQuestion extends Component {
+  constructor(props) {
+    super(props);
+    this.handleTitle = this.handleTitle.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
   state = {
-    open: false
+    open: false,
+    title: "",
+    options: []
   };
 
   handleClickOpen = () => {
@@ -30,17 +37,25 @@ class AddQuestion extends Component {
     this.setState({ open: false });
   };
 
-  handleSave = () => {
-    this.props.addQuestion("New Question");
+  handleSubmit = event => {
+    event.preventDefault();
+    const data = {
+      title: this.state.title
+    };
+
+    this.props.addQuestion(data);
+
     this.setState({ open: false });
   };
 
+  handleTitle(event) {
+    this.setState({
+      title: event.target.value
+    });
+  }
+
   render() {
     const { classes } = this.props;
-
-    console.log(this.state);
-    console.log(this.props);
-
     return (
       <div>
         <Button
@@ -59,24 +74,28 @@ class AddQuestion extends Component {
           fullWidth={true}
         >
           <DialogTitle id="form-dialog-title">Add a Question</DialogTitle>
-          <DialogContent>
-            <DialogContentText>Add the question below</DialogContentText>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="name"
-              label="Question"
-              fullWidth
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleClose} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={this.handleSave} color="primary">
-              Subscribe
-            </Button>
-          </DialogActions>
+          <form onSubmit={this.handleSubmit}>
+            <DialogContent>
+              <TextField
+                autoFocus
+                margin="dense"
+                id="name"
+                label="Question"
+                name="title"
+                fullWidth
+                value={this.state.name}
+                onChange={this.handleTitle}
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={this.handleClose} color="primary">
+                Cancel
+              </Button>
+              <Button type="submit" color="primary">
+                Submit
+              </Button>
+            </DialogActions>
+          </form>
         </Dialog>
       </div>
     );
@@ -84,7 +103,7 @@ class AddQuestion extends Component {
 }
 
 const mapStateToProps = state => {
-  return { questions: state.questions };
+  return { state };
 };
 
 const mapDispatchToProps = dispatch => ({
