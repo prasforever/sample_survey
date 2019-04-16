@@ -1,12 +1,10 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
 import Grid from "@material-ui/core/Grid";
 import { withStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 
-import { loadAction } from "../../actions/actions";
 import Questions from "../Questions";
 
 const styles = theme => ({
@@ -50,15 +48,4 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = ({ loadAction }) => ({
-  loadAction
-});
-
-const mapDispatchToProps = dispatch => ({
-  loadAction: () => dispatch(loadAction())
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withStyles(styles)(App));
+export default withStyles(styles)(App);
