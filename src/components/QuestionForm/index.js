@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
 import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
@@ -8,8 +7,6 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-
-import { addQuestion } from "../../actions/";
 
 const styles = theme => ({
   dialog: {
@@ -30,16 +27,8 @@ class AddQuestion extends Component {
     this.setState({ open: false });
   };
 
-  handleSave = () => {
-    this.props.addQuestion("New Question");
-    this.setState({ open: false });
-  };
-
   render() {
     const { classes } = this.props;
-
-    console.log(this.state);
-    console.log(this.props);
 
     return (
       <div>
@@ -73,7 +62,7 @@ class AddQuestion extends Component {
             <Button onClick={this.handleClose} color="primary">
               Cancel
             </Button>
-            <Button onClick={this.handleSave} color="primary">
+            <Button onClick={this.handleClose} color="primary">
               Subscribe
             </Button>
           </DialogActions>
@@ -82,16 +71,4 @@ class AddQuestion extends Component {
     );
   }
 }
-
-const mapStateToProps = state => {
-  return { questions: state.questions };
-};
-
-const mapDispatchToProps = dispatch => ({
-  addQuestion: value => dispatch(addQuestion(value))
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withStyles(styles)(AddQuestion));
+export default withStyles(styles)(AddQuestion);
