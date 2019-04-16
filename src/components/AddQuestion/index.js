@@ -24,13 +24,20 @@ const styles = theme => ({
   },
   answerButtonMargin: {
     marginTop: "2%"
+  },
+  errorDialog: {
+    backgroundColor: "#ff8a80",
+    paddingTop: theme.spacing.unit,
+    paddingBottom: theme.spacing.unit
   }
 });
 
 class AddQuestion extends Component {
   constructor(props) {
     super(props);
-    this.handleTitle = this.handleTitle.bind(this);
+    this.handleTitleChange = this.handleTitleChange.bind(this);
+    this.handleClickOpen = this.handleClickOpen.bind(this);
+    this.handleClose = this.handleClose.bind(this);
     this.handleAddOption = this.handleAddOption.bind(this);
     this.handleRemoveOption = this.handleRemoveOption.bind(this);
     this.handleOptionsTextChange = this.handleOptionsTextChange.bind(this);
@@ -39,6 +46,8 @@ class AddQuestion extends Component {
 
   state = {
     open: false,
+    error: false,
+    errorText: "",
     title: "",
     options: [{ text: "" }, { text: "" }]
   };
@@ -48,11 +57,45 @@ class AddQuestion extends Component {
   };
 
   handleClose = () => {
+    this.setState({
+      error: false
+    });
     this.setState({ open: false });
   };
 
   handleSubmit = event => {
     event.preventDefault();
+    this.setState({
+      error: false
+    });
+
+    if (this.state.title.length === 0) {
+      this.setState({
+        error: true,
+        errorText: "Please enter the Question"
+      });
+      return;
+    }
+
+    if (this.state.options.length < 2) {
+      this.setState({
+        error: true,
+        errorText: "Please enter atleast 2 options"
+      });
+      return;
+    }
+
+    const errors = this.state.options.filter(
+      option => option.text.length === 0
+    );
+    if (errors.length > 0) {
+      this.setState({
+        error: true,
+        errorText: "Please enter all options"
+      });
+      return;
+    }
+
     const newQuestionData = {
       title: this.state.title,
       options: this.state.options
@@ -60,16 +103,28 @@ class AddQuestion extends Component {
 
     this.props.addQuestion(newQuestionData);
 
-    this.setState({ open: false });
+    this.setState({
+      open: false,
+      error: false,
+      errorText: "",
+      title: "",
+      options: [{ text: "" }, { text: "" }]
+    });
   };
 
-  handleTitle(event) {
+  handleTitleChange(event) {
+    this.setState({
+      error: false
+    });
     this.setState({
       title: event.target.value
     });
   }
 
   handleOptionsTextChange = id => event => {
+    this.setState({
+      error: false
+    });
     const newOptions = this.state.options.map((option, i) => {
       if (id !== i) return option;
       return { ...option, text: event.target.value };
@@ -80,15 +135,33 @@ class AddQuestion extends Component {
 
   handleAddOption = () => {
     this.setState({
+      error: false
+    });
+    this.setState({
       options: this.state.options.concat([{ text: "" }])
     });
   };
 
   handleRemoveOption = id => () => {
     this.setState({
+      error: false
+    });
+    this.setState({
       options: this.state.options.filter((option, optionId) => id !== optionId)
     });
   };
+
+  renderError() {
+    const { classes } = this.props;
+    if (this.state.error) {
+      return (
+        <DialogContent className={classes.errorDialog}>
+          <p className={classes.error}>{this.state.errorText}</p>
+        </DialogContent>
+      );
+    }
+    return;
+  }
 
   render() {
     const { classes } = this.props;
@@ -96,8 +169,8 @@ class AddQuestion extends Component {
       <div>
         <Button
           variant="outlined"
-          size="large"
           className={classes.margin}
+          size="large"
           onClick={this.handleClickOpen}
         >
           Add a Question
@@ -121,7 +194,7 @@ class AddQuestion extends Component {
                 name="title"
                 fullWidth
                 value={this.state.name}
-                onChange={this.handleTitle}
+                onChange={this.handleTitleChange}
               />
             </DialogContent>
             <DialogContent>
@@ -159,6 +232,8 @@ class AddQuestion extends Component {
                 Add New Answer
               </Button>
             </DialogContent>
+            {this.renderError()}
+
             <DialogActions>
               <Button onClick={this.handleClose} color="secondary">
                 Cancel
