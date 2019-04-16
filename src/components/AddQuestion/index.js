@@ -53,11 +53,12 @@ class AddQuestion extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
-    const data = {
-      title: this.state.title
+    const newQuestionData = {
+      title: this.state.title,
+      options: this.state.options
     };
 
-    this.props.addQuestion(data);
+    this.props.addQuestion(newQuestionData);
 
     this.setState({ open: false });
   };
