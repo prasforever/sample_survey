@@ -2,45 +2,32 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
-import IconButton from "@material-ui/core/IconButton";
-import Input from "@material-ui/core/Input";
-import InputAdornment from "@material-ui/core/InputAdornment";
+import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import DeleteIcon from "@material-ui/icons/Delete";
 
 import { addQuestion } from "../../actions/";
 
 const styles = theme => ({
   dialog: {
     minWidth: "80%"
-  },
-  answerMargin: {
-    paddingTop: theme.spacing.unit,
-    paddingBottom: theme.spacing.unit
-  },
-  answerButtonMargin: {
-    marginTop: "2%"
   }
 });
 
-class AddQuestion extends Component {
+class Answer extends Component {
   constructor(props) {
     super(props);
     this.handleTitle = this.handleTitle.bind(this);
-    this.handleAddOption = this.handleAddOption.bind(this);
-    this.handleRemoveOption = this.handleRemoveOption.bind(this);
-    this.handleOptionsTextChange = this.handleOptionsTextChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   state = {
     open: false,
     title: "",
-    options: [{ text: "" }, { text: "" }]
+    options: []
   };
 
   handleClickOpen = () => {
@@ -68,27 +55,6 @@ class AddQuestion extends Component {
     });
   }
 
-  handleOptionsTextChange = id => event => {
-    const newOptions = this.state.options.map((option, i) => {
-      if (id !== i) return option;
-      return { ...option, text: event.target.value };
-    });
-
-    this.setState({ options: newOptions });
-  };
-
-  handleAddOption = () => {
-    this.setState({
-      options: this.state.options.concat([{ text: "" }])
-    });
-  };
-
-  handleRemoveOption = id => () => {
-    this.setState({
-      options: this.state.options.filter((option, optionId) => id !== optionId)
-    });
-  };
-
   render() {
     const { classes } = this.props;
     return (
@@ -112,11 +78,11 @@ class AddQuestion extends Component {
           <form onSubmit={this.handleSubmit}>
             <DialogContent>
               <DialogContentText>Question</DialogContentText>
-              <Input
+              <TextField
                 autoFocus
                 margin="dense"
                 id="name"
-                label="Question Text"
+                label="Question"
                 name="title"
                 fullWidth
                 value={this.state.name}
@@ -125,44 +91,21 @@ class AddQuestion extends Component {
             </DialogContent>
             <DialogContent>
               <DialogContentText>Answers</DialogContentText>
-              {this.state.options.map((option, i) => (
-                <div key={i}>
-                  <Input
-                    autoFocus
-                    className={classes.answerMargin}
-                    margin="dense"
-                    placeholder={`Answer  #${i + 1}`}
-                    value={option.text}
-                    fullWidth
-                    onChange={this.handleOptionsTextChange(i)}
-                    endAdornment={
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={this.handleRemoveOption(i)}
-                          aria-label="Delete"
-                        >
-                          <DeleteIcon fontSize="small" />
-                        </IconButton>
-                      </InputAdornment>
-                    }
-                  />
-                </div>
-              ))}
-              <Button
-                variant="contained"
-                onClick={this.handleAddOption}
-                color="primary"
-                disabled={this.state.options.length > 4 ? true : false}
-                className={classes.answerButtonMargin}
-              >
-                Add New Answer
-              </Button>
+              <TextField
+                margin="dense"
+                id="name"
+                label="Answer"
+                name="title"
+                fullWidth
+                value={this.state.name}
+                onChange={this.handleTitle}
+              />
             </DialogContent>
             <DialogActions>
-              <Button onClick={this.handleClose} color="secondary">
+              <Button onClick={this.handleClose} color="primary">
                 Cancel
               </Button>
-              <Button variant="contained" type="submit" color="primary">
+              <Button type="submit" color="primary">
                 Submit
               </Button>
             </DialogActions>
@@ -184,4 +127,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withStyles(styles)(AddQuestion));
+)(withStyles(styles)(Answer));
